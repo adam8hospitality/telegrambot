@@ -1,0 +1,2097 @@
+defmodule TgBot.TG.Answer do
+  alias TgBot.TG.Keyboards
+  require Logger
+
+
+  def send(user, answer_template, bindings \\ []) do
+    {template, keyboard_template} = answer(answer_template, user.language)
+    key = case keyboard_template do
+      :no_keyboard -> []
+      _ -> [reply_markup: keyboard(keyboard_template, user.language)]
+    end
+    text = EEx.eval_string(template, assigns: bindings)
+    Logger.debug(text)
+    Nadia.send_message(user.id, text, key)
+  end
+
+
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+
+
+	def answer(:deposit_bitcoin, "ru") do
+		{"(Bitcoin) Сколько вы хотели бы инвестировать?", :deposit_bitcoin}
+	end
+	def answer(:deposit_bitcoin, _) do
+		{"(Bitcoin) What amount are you considering to invest?", :deposit_bitcoin}
+	end
+	def answer(:deposit_perfect_money, "ru") do
+		{"(Perfect Money) Сколько вы хотели бы инвестировать?", :deposit_perfect_money}
+	end
+	def answer(:deposit_perfect_money, _) do
+		{"(Perfect Money) What amount are you considering to invest?", :deposit_perfect_money}
+	end
+
+
+	def answer(:deposit_pm_link, "ru") do
+		{"""
+		Пройдите по ссылке ниже, чтобы совершить платеж Perfect Money:
+		👉 <%= @link %>
+		""", :main}
+	end
+	def answer(:deposit_pm_link, _) do
+		{"""
+		Follow the link to pay with Perfect Money:
+		👉 <%= @link %>
+		""", :main}
+	end
+
+
+  def answer(:menu, "ru") do
+    {"""
+    Привет 👄
+    Исследуй меню ниже и узнай все мои тайны 🍓👽
+    👇👇👇👇👇👇
+    """, :main}
+  end
+
+
+  def answer(:select_language, _lang) do
+    {"Please, choose language! Пожалуйста выберите язык", :select_language}
+  end
+  def answer(:registered, "ru") do
+    {"Спасибо за регистрацию", :main}
+  end
+  def answer(:language_selected, "ru") do
+    {"Спасибо, что выбрали русский язык", :main}
+  end
+  def answer(:referrals, "ru") do
+    {"""
+  Не лови покемонов на дороге, лови деньги! 💸
+  Нажимай ХОЧУ ДЕНЕГ 💰 и получи 10 телеграм аккаунтов единомышленников, которые еще не знают про нас.
+  Привлекай их в проект по своей реферальной ccылке
+  Зарабатывай 10% от их депозита
+  Зарабатывай 1% от их рефералов!
+  👪
+	Твоя реферальная ссылка на сайт: https://bitfuture.io/?ref=<%=@referral_code%>
+  Твоя прямая реферальная ссылка: https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+
+
+	Нажимай ещё  📈🔝, когда закончишь с этими 10 ссылками!
+    """, :referrals}
+  end
+  def answer(:referrals_highway_required, "ru") do
+    {"""
+  Чтобы попасть в секретное меню, ты должен находиться на хайвее, инвестируй $100 и возвращайся, я жду 💋💋💋
+  В секретном меню тебя ждет уникальный инструмент для экспоненциального роста заработка 🔎📈💸
+    """, :deposit_required}
+  end
+  def answer(:referrals_get, "ru") do
+    {"""
+      Попробуй написать им: \n<%=@usernames_str%>
+      WARNING: These people may NOT speak your NATIVE LANGUAGE.
+      English language is the best way to start a coverstion!
+      """, :referrals_more}
+  end
+  def answer(:referrals_none, "ru") do
+    {"Извини, свободных контактов пока нет", :main}
+  end
+  def answer(:games, "ru") do
+    {"""
+  Соревнуйся с другими в игре Speed Racer.
+  Докажи что тебе нет равных на дороге 🚘🚘🚘🚘
+  Мы платим каждый день
+  $5 за рекорд дня 🏆
+  $30 рекорд недели 🔥🏆🔥
+  Нажимай ХОЧУ ИГРАТЬ 🙀🎮 
+  Выигрывай в нашем игровом чате! 
+    """, :games}
+  end
+  def answer(:games_test_drive_required, "ru") do
+    {"Чтобы играть в игры, ты должен записаться на тест-драйв 🚴", :deposit_required}
+  end
+  def answer(:games_invite, "ru") do
+    {"""
+		Присоединяйся к игре здесь!
+		https://telegram.me/joinchat/ESrn_0BOi77PJe9qqHncAQ
+		""", :main}
+  end
+  def answer(:faq, "ru") do
+    {"""
+  Как с нами зарабатывать?
+  Проще простого! Ты уже на правильном пути 📈
+  Для начала тебе потребуется Bitcoin и кошелек Bitcoin(см подробнее в следующем пункте)
+  Далее: 👉
+  Нажми ИНВЕСТИРОВАТЬ в главном меню, выбери сумму и подходящий тарифный план, отправляй Bitcoin на адрес, который я тебе покажу!
+
+
+  Что такое Bitcoin и где его взять?
+  Это долгая история 🏃 , но если тебе интересно, можешь почитать тут: https://en.wikipedia.org/wiki/Bitcoin
+  Купить биткоин можно на множестве онлайн обменников, например этот: https://www.bestchange.ru
+
+
+  Как вы зарабатываете?
+  Также как и будешь зарабатывать ты, с помощью инвестиций! Только тебе гораздо проще, ты инвестируешь только в наш проект, а мы должны тщательно отбирать и инвестировать во множество технологических стартапов, чтобы обеспечить тебе достойный уровень дохода! Но-уж поверь, мы в этом профи 👑👑👑
+
+
+  Что такое секретное меню?
+  Оно на то и секретное, что я тебе не скажу, но разве я буду интересной без интриги?🔥💋🔥
+  Секретное меню даёт тебе идеальный инструмент для заработка без вложений
+
+
+  Чем вы отличаетесь от других подобных проектов?
+  Во первых, объектом инвестиций выступают тщательно отобранные, низкорисковые и высокодоходные проекты на самом инновационном рынке. Наши аналитики самостоятельно отбирают лучшие проекты на рынке Blockchain стартапов, а мы перепродаем доли в проектах на вторичном рынке.
+    """, :main}
+  end
+  def answer(:talk_to_me, "ru") do
+    {"""
+  Тебе скучно?
+  Мы можем пообщаться на любую тему и здесь ты сможешь задать вопросы администрации напрямую👌
+    """, :no_keyboard}
+  end
+  def answer(:deposit, "ru") do
+    {"""
+  Перед тобой список инвестиционных планов. Просто деньги - это скучно, но, крутая тачка к Новому Году, - это совсем другое дело! Инвестируй с умом.
+
+
+  Тест драйв 🚴
+  От $15 до $100
+  3% в день, раз и навсегда.
+  Игры ✅
+  Секретное меню ❌
+  Клуб миллионеров ❌
+
+
+  Хайвей 🚘
+  $101 - $1000
+  3.5% в день, раз и навсегда.
+  Игры ✅
+  Секретное меню ✅
+  Клуб миллионеров ❌
+
+
+  Нитро 🚀
+  $1001 - $10000
+  4% в день, раз и навсегда.
+  Ты узнаешь, за счет чего мы обеспечиваем доходность 🔮
+  Игры ✅
+  Секретное меню ✅
+  Клуб миллионеров ✅
+
+
+  Кастом 👑
+  $10000+
+  Индивидуальный план
+    """, :deposit}
+  end
+  def answer(:deposit_address, "ru") do
+    {"""
+  Присылай от <%=@btc_amount%> Bitcoin на этот адрес <%=@address%>
+  Мы уведомим тебя, когда получим твой депозит.
+    """, :main}
+  end
+  def answer(:investment_recieved, "ru") do
+    {"""
+  Мы получили твой депозит в размере $<%= @usd_amount %>
+  Ты сделал правильный выбор 👍
+	Деньги будут зачислены на ваш баланс после 1 подтверждения в сети биткоин, обычно это занимает 10 мин
+      """, :main}
+  end
+  def answer(:test_drive_achieved, "ru") do
+    {"Вы на тарифном плане тест драйв. Вам доступны игры", :main}
+  end
+  def answer(:highway_achieved, "ru") do
+    {"Вы на тарифном плане хайвей. Вам доступны игры и секретное меню", :main}
+  end
+  def answer(:nitro_achieved, "ru") do
+    {"Вы на тарифном плане нитро. Вам доступны игры, секретное меню и клуб миллионеров", :main}
+  end
+  def answer(:reinvest, "ru") do
+    {"Ваш баланс $<%= @usd_amount %>. 💫", :reinvest}
+  end
+  def answer(:reinvestment_recieved, "ru") do
+    {"Вы совершили реинвестицию вашей прибыли. Так держать! 🎉 🎉 🎉", :main}
+  end
+  def answer(:reinvestment_denied, "ru") do
+    {"Вам не хватает денег для реинвестирования!", :main}
+  end
+
+
+  def answer(:investments, "ru") do
+    {"""
+  Баланс: $<%= if @usd_amount == 0 do %><%= @usd_amount%> 😰<%= else %><%= @usd_amount %> 😉<% end %>
+
+
+  Вклады:
+  <%= Enum.map(@investments, fn i -> %><%= if i.type == "investment" do %>👍 Инвестировано $<%=i.cent_amount/100%>, дата <%= i.date_confirmed%> <%= else %>😼 Реинвестировано $<%=i.cent_amount/100%>, дата <%= i.date_confirmed %> <% end%>
+<% end) %>
+  Выплаты:
+  <%= Enum.map(@payouts, fn p -> %>🙀 Выплата в размере $<%=p.cent_amount/100%>, дата <%= p.inserted_at%>
+<% end) %>
+  Вы инвестировали $<%= @you_invested %> 👍
+  Вы получили $<%= @you_paid %> 😉
+
+
+  Проект уже работает <%= @days %> дней, инвестировано $<%= @total_invested %> долларов. 💰💰💰
+    """, :main}
+  end
+
+
+  def answer(:withdrawal, "ru") do
+    {"Текущий баланс $<%= @usd_amount %>", :withdrawal}
+  end
+  def answer(:withdrawal_sent, "ru") do
+    {"Средства отправлены, ожидайте получения. tx_id: <%= @tx_id%>", :main}
+  end
+  def answer(:reflink, "ru") do
+    {"""
+		Твоя реферальная ссылка на сайт: https://bitfuture.io/?ref=<%=@referral_code%>
+	  Твоя прямая реферальная ссылка: https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    Первый уровень 10%, Второй уровень 2%
+		У вас пока нет рефералов :(
+
+
+    Когда кто - то делает депозит после перехода по реферальной ссылке, вы получаете 10% от их средств моментально.
+    """, :main}
+  end
+  def answer(:reflink_with_list, "ru") do
+    {"""
+		Твоя реферальная ссылка на сайт: https://bitfuture.io/?ref=<%=@referral_code%>
+	  Твоя прямая реферальная ссылка: https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    Первый уровень 10%, Второй уровень 2%
+		Пользователи, приглашенные вами:
+		<%= @referrals_str %>
+
+
+    Когда кто - то делает депозит после перехода по реферальной ссылке, вы получаете 10% от их средств моментально.
+    """, :main}
+  end
+  def answer(:referral_earning, "ru") do
+    {"УРА! <%= @first_name %> произвел свою инвестицию по вашей реферальной ссылке! Вы заработали $<%= @usd_earning_amount%> 💎💎💎 ", :main}
+  end
+  def answer(:settings_ref, "ru") do
+    {"Вас пригласил <%= @first_name %>.", :settings}
+  end
+  def answer(:settings, "ru") do
+    {"Реферер не установлен.", :settings}
+  end
+  def answer(:input_address, "ru") do
+    {"Отправь мне свой Bitcoin адрес для вывода.", :no_keyboard}
+  end
+  def answer(:address_set, "ru") do
+    {"Ок. Адрес сохранен.", :main}
+  end
+  def answer(:address_denied, "ru") do
+    {"Извините, <%= @address %> не является Bitcoin адресом", :main}
+  end
+  def answer(:input_refcode, "ru") do
+    {"Отправь мне реферальный код человека, который тебя пригласил", :no_keyboard}
+  end
+  def answer(:referral_set, "ru") do
+    {"Реферал изменен", :main}
+  end
+
+
+
+
+  def answer(:referral_invalid, "ru") do
+    {"Извините, неправильный код реферала", :main}
+  end
+  def answer(:investment_earning, "ru") do
+    {"Новый дневной доход: $<%= @usd_earning_amount %>",:main}
+  end
+  def answer(:payout_address_not_set, "ru") do
+    {"Ваш адрес для вывода не установлен, установите его в настройках", :main}
+  end
+
+
+  def answer(:minimum_withdrawal, "ru") do
+    {"Минимум к выводу: $<%= @usd_amount %>", :main}
+  end
+  def answer(:technical_issue, "ru") do
+    {"Техническая ошибка, попробуйте позже", :main}
+  end
+  def answer(:welcome_back, "ru") do
+    {"Welcome Back, <%= @first_name %>", :main}
+  end
+  def answer(:balance, "ru") do
+    {"Текущий баланс: $ <%= @usd_amount %>", :main}
+  end
+  def answer(:referral_self_denied, "ru") do
+    {"Извините, вы не можете быть своим собственным рефералом", :main}
+  end
+  def answer(:contacts, "ru") do
+    {"""
+		Веб-сайт: bitfuture.io
+		💬 Основное сообщество Bitfuture: https://telegram.me/joinchat/ESrn_0FfEirX5NWjsFCjgA
+
+
+		Индонезийское сообщество https://telegram.me/joinchat/Dzoo3D_xSU6XqC__0dxMDQ
+		Российское сообщество https://telegram.me/joinchat/ESrn_0E1h525uYlzVyczPg
+		Индийское сообщество https://telegram.me/joinchat/ESrn_0F86S1K1irMD3HAlA
+
+
+
+
+		Создатель: @bitfuture
+		Поддержка на английском: @bitfuture_Ashley
+		Поддержка на русском: @bitfuture_Kate
+		""", :main}
+  end
+  def answer(:investment_confirmed, "ru") do
+    {"Ваша транзакция подтвердилась <%= @usd_amount %>", :main}
+  end
+	def answer(:somebody_set_your_ref_id, "ru") do
+		{"Спасибо! Пользователь <%= @first_name %> присоединился к проекту по вашей реферальной ссылке!", :main}
+	end
+
+
+	####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+
+
+	def answer(:menu, "ger") do
+		{"""
+		Hallo 👄
+	 	Verwende das Menü unten, um alle meine Geheimnisse zu entdecken 👽
+		👇👇👇👇👇👇
+		""", :main}
+	end
+
+
+	def answer(:registered, "ger") do
+		{"Vielen Dank für die Registrierung!", :main}
+	end
+	def answer(:language_selected, "ger") do
+		{"Vielen Dank, dass du dich für die deutsche Sprache entschieden haben", :main}
+	end
+	def answer(:referrals, "ger") do
+		{"""
+	Fange keine Pokémons auf der Straße, fange das Geld! 💸
+	Betätige WILL GELD 💰 und Du bekommst 10 Telegramm-Accounts von Gleichgesinnten, die noch nicht wissen, dass es uns gibt.
+	Mach ihnen ein interessantes Angebot, damit sie über Deine Referenzlinie in das Projekt einsteigen, und Du verdienst 10% von dem, was sie anlegen + je 1% von deren Referenzlinien!
+	👪
+	Deine Referenzlinie: telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+	Klicke auf mehr 📈🔝, wenn du bereit bist!
+		""", :referrals}
+	end
+	def answer(:referrals_highway_required, "ger") do
+		{"""
+	Um in das Secret Menu zu kommen, musst Du auf den Highway, Investiere $100 und komm wieder, ich warte 💋💋💋
+	Im Secret Menu erwaret Dich ein einzigartiges Instrument für ein exponentiales Anwachsen Deines Verdienstes 🔎📈💸
+		""", :deposit_required}
+	end
+	def answer(:referrals_get, "ger") do
+		{"""
+		Versuche, diese Leute zu kontaktieren: \n<%=@usernames_str%>
+			WARNUNG: Diese Leute sprechen EVENTUELL NICHT deine Muttersprache.
+			Englisch ist der beste Weg eine Konversation zu starten.
+			""", :referrals_more}
+	end
+	def answer(:referrals_none, "ger") do
+		{"Es sind leider noch keine Kontakte vorhanden. Bitte wende dich an den Support.", :main}
+	end
+	def answer(:games, "ger") do
+		{"""
+	Miss Deine Kräfte mit anderen im Spiel Speed Driver!
+	Zeig, dass Dir auf der Straße niemand was vormachen kann
+	🚘🚘🚘🚘
+	Wir zahlen jeden Tag $5 für den Tagesrekord 🏆
+	$30 für den Rekordhalter der Woche 🔥🏆🔥
+	Drück die Taste WILL SPIELEN  🙀🎮
+	Verdiene in unserem Spiel-Chat! 
+		""", :games}
+	end
+	def answer(:games_test_drive_required, "ger") do
+		{"Um Spiele zu spielen, musst Du Dich beim Testdrive anmelden 🚴", :deposit_required}
+	end
+	def answer(:games_invite, "ger") do
+		{"""
+		Schließe dich dem Spiel hier an!
+		https://telegram.me/joinchat/ESrn_0BOi77PJe9qqHncAQ
+		""", :main}
+	end
+	def answer(:faq, "ger") do
+		{"""
+	Wie kann man mit uns Geld verdienen?
+	Nichts einfacher als das! Du bist schon auf dem richtigen Wege 📈
+	Für den Anfang brauchst Du Bitcoins und ein Bitcoin-Wallet (Details im folgenden Punkt)
+	Weiter: 👉
+	Taste INVESTIEREN im Hauptmenü, wähle einen Betrag aus, und Deinen Tarifplan, schicke Bitcoins an die Adresse, die ich Dir anzeige!
+
+
+	Was sind Bitcoins und wo bekomme ich diese?
+	Oh, das ist eine lange Geschichte 🏃 , Wenn Du Interesse hast, kannst Du unter folgendem Link alles nachlesen: https://en.wikipedia.org/wiki/Bitcoin
+	Bitcoins bekommt man in vielen Online-Wechselstuben, zum Beispiel hier: https://www.bestchange.com
+
+
+	Was verdient ihr dabei?
+	Wir verdienen genauso, wie Du auch: Wir investieren! Nur – Du hast es erheblich einfacher. Du investierst nur in unser Projekt, wir aber müssen sorgfältig eine Menge von technischen Startups auswählen und darin investieren, damit Du eine ordentliche Einkommensstufe bekommst! Du kannst uns aber vertrauen – wir sind Profis auf diesem Gebiet 👑👑👑
+
+
+	Was ist das Secret Menu?
+	Secret Menu heißt „Geheimes Menü“ – so geheim, dass ich es Dir selbst nicht sagen kann. Aber – gäbe es diese kleinen Geheimnisse nicht, wäre es dann für Dich noch interessant? 🔥💋🔥
+	Das Secret Menu ist ein ideales Instrument in Deinen Händen, um ohne Investments zu arbeiten!
+
+
+	Was unterscheidet euch von anderen ähnlichen Projekten?
+	Erstens bieten wir sorgfältig ausgesuchte Projekte mit niedrigem Risiko und hoher Gewinnerwartung als Investmentobjekt an, die direkt vom Markt der Innovationen stammen. Unsere Analytiker wählen selbst die besten Projekte auf dem Markt für Blockchain-Startups aus, und wir verkaufen die Anteile an den Projekten auf dem Sekundärmarkt weiter.
+		""", :main}
+	end
+	def answer(:talk_to_me, "ger") do
+		{"""
+	Dir ist langweilig?
+	Wir könnten etwas chatten, Thema ist egal. Hier kannst Du auch Deine Fragen direkt an den Admin loswerden 👌
+		""", :no_keyboard}
+	end
+	def answer(:deposit, "ger") do
+		{"""
+	Hier siehst du eine Liste mit unseren Investmentplänen.
+	Wähle den Plan aus, der am besten zu Dir passt.
+
+
+	Test drive 🚴
+	$15 bis $100
+	3% pro Tag, ein und für allemal!
+	Spiele ✅
+	Secret Menu ❌
+	Club der Millionäre ❌
+
+
+	Highway 🚘
+	$101 bis $1000
+	3.5% am Tag, ein und für allemal!
+	Spiele ✅
+	Secret Menu ✅
+	Club der Millionäre ❌
+
+
+	Nitro 🚀
+	$1001 bis $10000
+	4% am Tag, ein und für allemal!
+	Du erkennst, auf welcher Grundlage wir die Einkommen sicherstellen 🔮
+	Spiele ✅
+	Secret Menu ✅
+	Club der Millionäre ✅
+
+
+	Custom 👑
+	$10000+
+	Individueller Plan
+		""", :deposit}
+	end
+	def answer(:deposit_address, "ger") do
+		{"""
+	Sende <%=@btc_amount%> oder mehr BTC an <%=@address%>
+	Ich werde dich benachrichtigen sobald wir deine Zahlung erhalten haben.
+		""", :main}
+	end
+	def answer(:investment_recieved, "ger") do
+		{"""
+	Dein Deposit in Höhe von $<%= @usd_amount %> ist eingetroffen
+	Du hast die richtige Wahl getroffen 👍
+	Sie werden nach 1 Bestätigung auf dem Bitcoin-Netzwerk auf Ihrem Konto hinterlegt. Das dauert normalerweise 10 Minuten.
+			""", :main}
+	end
+	def answer(:test_drive_achieved, "ger") do
+		{"Du bist auf Test Drive. Du kannst jetzt Spiele spielen", :main}
+	end
+	def answer(:highway_achieved, "ger") do
+		{"Du bist auf Highway. Jetzt hast du Zugriff auf Spiele und geheimes Menü", :main}
+	end
+	def answer(:nitro_achieved, "ger") do
+		{"Du bist auf einem Nitro. Jetzt hast du Zugang zu Spielen, geheimes Menü und The Millionaires Club", :main}
+	end
+	def answer(:reinvest, "ger") do
+		{"Dein Gleichgewicht ist $<%= @usd_amount %>. 💫", :reinvest}
+	end
+	def answer(:reinvestment_recieved, "ger") do
+		{"Du hast deinen Gewinn investiert. Gut gemacht! 🎉 🎉 🎉", :main}
+	end
+	def answer(:reinvestment_denied, "ger") do
+		{"Unzureichende Mittel zur Reinvestition!", :main}
+	end
+
+
+	def answer(:investments, "ger") do
+		{"""
+	Gleichgewicht: $<%= if @usd_amount == 0 do %><%= @usd_amount%> 😰<%= else %><%= @usd_amount %> 😉<% end %>
+
+
+	Invetitionen:
+	<%= Enum.map(@investments, fn i -> %> <%= if i.type == "investment" do %>👍 Invested $<%=i.cent_amount/100%>, date <%= i.date_confirmed%><% else %>😼 Reinvested $<%=i.cent_amount/100%>, date <%= i.date_confirmed%><% end %>
+	<% end) %>
+	Zahlungen:
+	<%= Enum.map(@payouts, fn p -> %>🙀 Zahlung in Höhe von $<%=p.cent_amount/100%>, date <%= p.inserted_at%>
+	<% end) %>
+	Investiert: $<%= @you_invested %> 👍
+	Erhalten: $<%= @you_paid %> 😉
+
+
+	Wir sind seit <%= @days %> Tagen im Spiel. Insgesamt investiert (in USD): $<%= @total_invested %> 💰💰💰
+		""", :main}
+	end
+
+
+	def answer(:withdrawal, "ger") do
+		{"Aktuelle Balance $<%= @usd_amount %>", :withdrawal}
+	end
+	def answer(:withdrawal_sent, "ger") do
+		{"Gelder erfolgreich versendet! Bitte warte auf die Bestätigungen. tx_id: <%= @tx_id%>", :main}
+	end
+	def answer(:reflink, "ger") do
+		{"""
+		Deine Referenzlinie (web): https://bitfuture.io/?ref=<%=@referral_code%>
+		Deine Referenzlinie (bot): https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+		Erste Ebene 10%, Zweite Ebene 2%
+		Du hast noch keine Referrals :(
+
+
+		Wenn jemand eine Einzahlung mit deinem Referenzlinie Link macht, erhälst du sofort 10% der Einzahlung.
+		""", :main}
+	end
+	def answer(:reflink_with_list, "ger") do
+		{"""
+		Deine Referenzlinie (web): https://bitfuture.io/?ref=<%=@referral_code%>
+		Deine Referenzlinie (bot): https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+		Erste Ebene 10%, Zweite Ebene 2%
+		Referrals von dir eingeladen:
+		<%= @referrals_str %>
+
+
+		Wenn jemand eine Einzahlung mit deinem Referenzlinie Link macht, erhälst du sofort 10% der Einzahlung.
+		""", :main}
+	end
+	def answer(:referral_earning, "ger") do
+		{"WOW! <%= @first_name %> hat seine / ihre Investition mit deinem Empfehlungslink gemacht! Du hast $<%= @usd_earning_amount%> verdient 💎💎💎 ", :main}
+	end
+	def answer(:settings_ref, "ger") do
+		{"Du wurdest von <%= @first_name %> eingeladen.", :settings}
+	end
+	def answer(:settings, "ger") do
+		{"Du hast keinen Referrer.", :settings}
+	end
+	def answer(:input_address, "ger") do
+		{"Richte deine Abhebungsadresse ein.", :no_keyboard}
+	end
+	def answer(:address_set, "ger") do
+		{"OK. Adresse wurde gespeichert.", :main}
+	end
+	def answer(:address_denied, "ger") do
+		{"Es tut uns leid, <%= @address %> Ist keine gültige Bitcoin-Adresse", :main}
+	end
+	def answer(:input_refcode, "ger") do
+		{"Schicke mir einen Referenzlinie des Benutzers, der dich eingeladen hat", :no_keyboard}
+	end
+	def answer(:referral_set, "ger") do
+		{"Referrer geändert", :main}
+	end
+
+
+
+
+	def answer(:referral_invalid, "ger") do
+		{"Sorry, ungültige Referenzlinie", :main}
+	end
+	def answer(:investment_earning, "ger") do
+		{"Neuer Tagesgewinn: $<%= @usd_earning_amount %>",:main}
+	end
+	def answer(:payout_address_not_set, "ger") do
+		{"Bitte richte deine Abhebungsadresse in den Einstellungen ein!", :main}
+	end
+
+
+	def answer(:minimum_withdrawal, "ger") do
+		{"Mindestentnahme: $<%= @usd_amount %>", :main}
+	end
+	def answer(:technical_issue, "ger") do
+		{"Oh nein! Etwas ging schief. Bitte probiere es später noch einmal.", :main}
+	end
+	def answer(:welcome_back, "ger") do
+		{"Willkommen zurück, <%= @first_name %>", :main}
+	end
+	def answer(:balance, "ger") do
+		{"Aktuelle Balance: $ <%= @usd_amount %>", :main}
+	end
+	def answer(:referral_self_denied, "ger") do
+		{"Sorry, du kannst nicht deine eigene Referral sein =)", :main}
+	end
+	def answer(:contacts, "ger") do
+		{"""
+		Webseite: bitfuture.io
+		💬 Bitfuture Community: https://telegram.me/joinchat/ESrn_0FfEirX5NWjsFCjgA
+
+
+		Deutsche Community: https://telegram.me/joinchat/ESrn_0CVkNRTKWSEXaTSag
+		Indonesische Community: https://telegram.me/joinchat/Dzoo3D_xSU6XqC__0dxMDQ
+		Russische Community: https://telegram.me/joinchat/ESrn_0E1h525uYlzVyczPg
+		Indische Community: https://telegram.me/joinchat/ESrn_0F86S1K1irMD3HAlA
+
+
+		@bitfuture der Ersteller
+		@bitfuture_Kate RU, EN Support
+		@bitfuture_Ashley EN Support
+		""", :main}
+	end
+	def answer(:investment_confirmed, "ger") do
+		{"Deine Transaktion von <%= @usd_amount %> wurde bestätigt", :main}
+	end
+	def answer(:somebody_set_your_ref_id, "ger") do
+		{"Dankeschön! Der Benutzer <%= @first_name %> hat gerade Bitfuture mit deinem Referral-Link gestartet!", :main}
+	end
+
+
+
+
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+  def answer(:menu, "en") do
+    {"""
+    Hello 👄
+    Use menu bellow to discover all my secrets 👽
+    👇👇👇👇👇👇
+    """, :main}
+  end
+
+
+  def answer(:registered, "en") do
+    {"Thank you for registration!", :main}
+  end
+  def answer(:language_selected, "en") do
+    {"Thank you for choosing English language", :main}
+  end
+  def answer(:referrals, "en") do
+    {"""
+  Don't catch pokemons on the road, catch money! 💸
+  Click I WANT MONEY 💰 and get 10 Telegram accounts of like-minded persons that already don't know about us.
+  Attract them to the project using your referral link
+  Earn 10% of their deposits
+  1% of their referrals!
+  👪
+  Your referral link: telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+  Click more  📈🔝, when you are through with these 10 links!
+    """, :referrals}
+  end
+  def answer(:referrals_highway_required, "en") do
+    {"""
+  To get to the Secret Menu, you have to be on the highway. Invest $100 and come back, I'll be waiting 💋💋💋
+  In the Secret Menu you will find a unique tool for an exponential growth of your earnings 🔎📈💸
+    """, :deposit_required}
+  end
+  def answer(:referrals_get, "en") do
+    {"Try to contact these people: \n<%=@usernames_str%>", :referrals_more}
+  end
+  def answer(:referrals_none, "en") do
+    {"Sorry, there are no contacts left today. Please contact support.", :main}
+  end
+  def answer(:games, "en") do
+    {"""
+  Compete with other players in the Speed Driver game.
+  Prove that no one can beat you on the road 🚘🚘🚘🚘
+  Every day we pay:
+  $5 for the record of the day 🏆
+  $30 record of the week 🔥🏆🔥
+  Click I WANT TO PLAY 🙀🎮
+  Earn in our game chat! 
+    """, :games}
+  end
+  def answer(:games_test_drive_required, "en") do
+    {"To start playing games, you will have to sign up for a test drive 🚴", :deposit_required}
+  end
+  def answer(:games_invite, "en") do
+    {"""
+		Join the game here!
+		https://telegram.me/joinchat/ESrn_0BOi77PJe9qqHncAQ
+		""", :main}
+  end
+  def answer(:faq, "en") do
+    {"""
+  How to earn with us?
+  It couldn't be any easier! You are already on the right track 📈
+  To start, you will need to buy Bitcoin. (for more details, see the following paragraph)
+  After that: 👉
+  Click INVEST in the Main Menu, choose an amount and a suitable tariff plan and send Bitcoin to the address that I will show you!
+
+
+  What is Bitcoin and where can I get it?
+  It's a long story 🏃 , but if you are interested, you can read about it here: https://en.wikipedia.org/wiki/Bitcoin
+  You can buy a Bitcoin at various online exchangers, for instance, here: https://www.bestchange.com
+
+
+  How do you earn money?
+  The same way as you will earn, using investments! But it will be much easier for you, since you invest only in our project, and we have to thoroughly select and invest in many technological start-ups to ensure you having a decent level of earnings! But believe us: we are true professionals in this field 👑👑👑
+
+
+  What is the Secret Menu?
+  It is a secret, as it can be seen from its name, so I won't tell you: will I be interesting to you without intriguing? 🔥💋🔥
+  Secret Menu provides you with an ideal tool for earnings without investments!
+
+
+  What is the difference between you and other projects?
+  Primarily, the investment objects are thoroughly selected, those are the low risk and high-yielding projects on the most innovative market. Our analytics independently choose the best projects on the Blockchain start-up market, and we resell shares in the projects on the secondary market.
+    """, :main}
+  end
+  def answer(:talk_to_me, "en") do
+    {"""
+  Are you bored?
+  We can talk of any subject and you can ask the administration direct questions here 👌
+    """, :no_keyboard}
+  end
+  def answer(:deposit, "en") do
+    {"""
+  Here you can see a list of investment plans.
+  Choose the one you will be able to manage with.
+
+
+  Test drive 🚴
+  From $15 to $100
+  3% a day, once and forever.
+  Games ✅
+  Secret Menu ❌
+  Millionaire's Club ❌
+
+
+  Highway 🚘
+  $101 - $1000
+  3.5% a day, once and forever.
+  Games ✅
+  Secret Menu ✅
+  Millionaire's Club ❌
+
+
+  Nitro 🚀
+  $1001 - $10000
+  4% a day, once and forever.
+  You will learn how we ensure profitability 🔮
+  Games ✅
+  Secret Menu ✅
+  Millionaire's Club ✅
+
+
+  Custom 👑
+  $10000+
+  Individual Plan
+    """, :deposit}
+  end
+  def answer(:deposit_address, "en") do
+    {"""
+  Send <%=@btc_amount%> or more Bitcoin to this adress <%=@address%>
+  We will inform you when we receive your deposit.
+    """, :main}
+  end
+  def answer(:investment_recieved, "en") do
+    {"""
+  We have received your deposit in the amount of $<%= @usd_amount %>
+  You made the right choice 👍
+	You funds will be deposited to your account after 1 confirmation on the Bitcoin network. Usually, it takes about 10 minutes.
+      """, :main}
+  end
+  def answer(:test_drive_achieved, "en") do
+    {"You're on a Test Drive. You can now play games", :main}
+  end
+  def answer(:highway_achieved, "en") do
+    {"You're on a Highway. Now you have access to games and secret menu", :main}
+  end
+  def answer(:nitro_achieved, "en") do
+    {"You're on a Nitro. Now you have access to games, secret menu and The Millionaire's Club", :main}
+  end
+  def answer(:reinvest, "en") do
+    {"Your balance is $<%= @usd_amount %>. 💫", :reinvest}
+  end
+  def answer(:reinvestment_recieved, "en") do
+    {"You have reinvested your profit. Well done! 🎉 🎉 🎉", :main}
+  end
+  def answer(:reinvestment_denied, "en") do
+    {"Insuffucient funds for reinvesting!", :main}
+  end
+
+
+  def answer(:investments, "en") do
+    {"""
+  Balance: $<%= if @usd_amount == 0 do %><%= @usd_amount%> 😰<%= else %><%= @usd_amount %> 😉<% end %>
+
+
+  Deposits:
+  <%= Enum.map(@investments, fn i -> %> <%= if i.type == "investment" do %>👍 Invested $<%=i.cent_amount/100%>, date <%= i.date_confirmed%><% else %>😼 Reinvested $<%=i.cent_amount/100%>, date <%= i.date_confirmed%><% end %>
+  <% end) %>
+  Payouts:
+  <%= Enum.map(@payouts, fn p -> %>🙀 Payout in amount $<%=p.cent_amount/100%>, date <%= p.inserted_at%>
+  <% end) %>
+  You have invested: $<%= @you_invested %> 👍
+  You have recieved: $<%= @you_paid %> 😉
+
+
+  We're in the game for <%= @days %> days, total USD invested: $<%= @total_invested %> 💰💰💰
+    """, :main}
+  end
+
+
+  def answer(:withdrawal, "en") do
+    {"Current balance $<%= @usd_amount %>", :withdrawal}
+  end
+  def answer(:withdrawal_sent, "en") do
+    {"Funds have been sent, await for confirmation. tx_id: <%= @tx_id%>", :main}
+  end
+  def answer(:reflink, "en") do
+    {"""
+		Your website referral link: https://bitfuture.io/?ref=<%=@referral_code%>
+		Your direct referral link: https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    First level 10%, Second level 2%
+		You have no referrals yet :(
+
+
+    When someone makes a deposit using your referral link, you will recieve 10% of their deposit immediately.
+    """, :main}
+  end
+  def answer(:reflink_with_list, "en") do
+    {"""
+		Your website referral link: https://bitfuture.io/?ref=<%=@referral_code%>
+		Your direct referral link: https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    First level 10%, Second level 2%
+		Referrals invited by you:
+		<%= @referrals_str %>
+
+
+    When someone makes a deposit using your referral link, you will recieve 10% of their deposit immediately.
+    """, :main}
+  end
+  def answer(:referral_earning, "en") do
+    {"WOW! <%= @first_name %> has made his/her first investment using your referral link! You have earned $<%= @usd_earning_amount%> 💎💎💎 ", :main}
+  end
+  def answer(:settings_ref, "en") do
+    {"You have been invited by <%= @first_name %>.", :settings}
+  end
+  def answer(:settings, "en") do
+    {"You don't have a referrer.", :settings}
+  end
+  def answer(:input_address, "en") do
+    {"Send me your Bitcoin withdrawal adress.", :no_keyboard}
+  end
+  def answer(:address_set, "en") do
+    {"Ok. Adress has been saved.", :main}
+  end
+  def answer(:address_denied, "en") do
+    {"Sorry, <%= @address %> is not a valid Bitcoin adress", :main}
+  end
+  def answer(:input_refcode, "en") do
+    {"Send me a referral ID of the user, who invited you.", :no_keyboard}
+  end
+  def answer(:referral_set, "en") do
+    {"Referral changed", :main}
+  end
+
+
+
+
+  def answer(:referral_invalid, "en") do
+    {"Sorry, invalid referral ID", :main}
+  end
+  def answer(:investment_earning, "en") do
+    {"New daily profit: $<%= @usd_earning_amount %>",:main}
+  end
+  def answer(:payout_address_not_set, "en") do
+    {"Please set up your withdrawal adress in settings!", :main}
+  end
+
+
+  def answer(:minimum_withdrawal, "en") do
+    {"Minimum withdrawal: $<%= @usd_amount %>", :main}
+  end
+  def answer(:technical_issue, "en") do
+    {"Oops something went wrong, keep it easy! Just try later.", :main}
+  end
+  def answer(:welcome_back, "en") do
+    {"Welcome Back, <%= @first_name %>", :main}
+  end
+  def answer(:balance, "en") do
+    {"Current balance: $ <%= @usd_amount %>", :main}
+  end
+  def answer(:referral_self_denied, "en") do
+    {"Sorry, you can't be your own refferal =)", :main}
+  end
+	def answer(:contacts, "en") do
+    {"""
+		Website: bitfuture.io
+		💬 Bitfuture Community: https://telegram.me/joinchat/ESrn_0FfEirX5NWjsFCjgA
+
+
+		German Community: https://telegram.me/joinchat/ESrn_0CVkNRTKWSEXaTSag
+		Indonesian community https://telegram.me/joinchat/Dzoo3D_xSU6XqC__0dxMDQ
+		Russian community https://telegram.me/joinchat/ESrn_0E1h525uYlzVyczPg
+		Indian community https://telegram.me/joinchat/ESrn_0F86S1K1irMD3HAlA
+
+
+		@bitfuture the Creator
+		@bitfuture_Kate RU, EN Support
+		@bitfuture_Ashley EN Support
+		""", :main}
+	end
+
+
+  def answer(:investment_confirmed, "en") do
+    {"Your transaction has been confirmed <%= @usd_amount %>", :main}
+  end
+	def answer(:somebody_set_your_ref_id, _) do
+		{"Thank You! User <%= @first_name %> joined Bitfuture with your referral link!", :main}
+	end
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+
+
+
+
+  def answer(:menu, "turk") do
+    {"""
+    Merhaba 👄
+    Tüm sırlarını keşfetmek için, menü feryat kullanın 👽
+    👇👇👇👇👇👇
+    """, :main}
+  end
+
+
+  def answer(:registered, "turk") do
+    {"Kayıt için teşekkür ederiz!", :main}
+  end
+  def answer(:language_selected, "turk") do
+    {"Türk dilini tercih ettiğiniz için teşekkür ederiz", :main}
+  end
+  def answer(:referrals, "turk") do
+    {"""
+  Yolda pokemonları değil parları yakala! 💸
+  PARA tıkla 💰 ve seni daha hiç tanımayan hemfikir hesaplardan 10 telgraf al, onları referans bağlantın aracılığıyla projeye çek ve onların depozitolarından %10 ve havalelerinden %1 kazan!
+  👪
+  Sizin havale bağlantınız: telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+  Bu 10 bağlantıyı bitirdikten sonra İSTİYORUM 📈🔝 tıkla !
+    """, :referrals}
+  end
+  def answer(:referrals_highway_required, "turk") do
+    {"""
+  Gizli menüye ulaşmak için yolda bulunmalısın, 100$ yatır ve geri dön, bekliyorum 💋💋💋
+  Gizli menüde seni kazancın üstel yükselmesi için bir araç bekliyor 🔎📈💸
+    """, :deposit_required}
+  end
+  def answer(:referrals_get, "turk") do
+    {"""
+      Bu kişilerle irtibata deneyin: \n<%=@usernames_str%>
+      WARNING: These people may NOT speak your NATIVE LANGUAGE.
+      English language is the best way to start coverstion!
+      """, :referrals_more}
+  end
+  def answer(:referrals_none, "turk") do
+    {"Maalesef, bugün sol hiçbir kişi vardır. Desteğiyle iletişime geçin.", :main}
+  end
+  def answer(:games, "turk") do
+    {"""
+  Speed Driver oyununda diğerleriyle yarış, yolda kimsenin senin rakibin olamayacağını ıspatla.
+  🚘🚘🚘🚘
+  Günün rekoru için her gün 5$ ödüyoruz 🏆
+  haftanın galibine 30$ ödüyoruz 🔥🏆🔥
+  OYNAMAK İSTİYORUMu 🙀🎮 tıkla ve oyun chatımızda kazan!
+    """, :games}
+  end
+  def answer(:games_test_drive_required, "turk") do
+    {"Oyunları oynamak için test drive kayıt olman gerekiyor 🚴", :deposit_required}
+  end
+  def answer(:games_invite, "turk") do
+    {"""
+		Burada Oyuna katıl!
+		https://telegram.me/joinchat/ESrn_0BOi77PJe9qqHncAQ
+		""", :main}
+  end
+  def answer(:faq, "turk") do
+    {"""
+  Bizimle nasıl para kazanılabilir?
+  Cok basit! Artık doğru yoldasın 📈
+  başta senin Bitcoin ve Bitcoin cuzdana ihtiyacın var.
+  Bundan boyle: 👉
+  Ana menude YATIRIM YAPMAKı tıkla, miktarı sec ve sana uygun tarife planını sec, sana gostereceğim adrese Bitcoin gonder!
+
+
+  Bitcoin nereden alınır?
+  Cok uzun bir hikayedir 🏃 , eğer merak ediyorsan burada okuyabilirsin: https://en.wikipedia.org/wiki/Bitcoin
+  Bitcoini online dovuzculerden satınalabilirsin, orneğin burada: https://www.bestchange.com
+
+
+  Siz nasıl para kazanıyorsunuz?
+  Sen nasıl yatırımlarıyla kazanıyorsan biz de aynı şekilde! Ancak seninki daha kolay, sen sadece bizim projemize yatırım yapıyorsun, biz ise sana layık kazancı sağlamak icin bircok teknolojik startupları detaylı bir şekilde inceleyip yatırım yapmak zorundayız! İnan biz bu işin ustasıyız 👑👑👑
+
+
+  Gizli menu nedir?
+  Gizli olduğu icin soylemeyeceğim, cilvesiz ilgi cekici olabilir miyim? 🔥💋🔥
+  Gizli menu senin yatırım yapmadan kazanman icin harika bir arac sağlıyor!
+
+
+  Diğer benzer projelerden farkınız ne?
+  İlk olarak,yatırım objesi olarak birincil piyasada son derece secilmiş, duşuk riskli ve yuksek gelirli projeler one cıkıyor. Analistlerimiz  Blockchain piyasasında en iyi projeleri seciyorlar, biz ise ikincil piyasada projelerin paylarını satıyoruz.
+    """, :main}
+  end
+  def answer(:talk_to_me, "turk") do
+    {"""
+  SIKILDIN MI?
+  Seninle istediğimiz konuda konuşabiliriz ve burada sorularını direkt yönetime sorabilirsin 👌
+    """, :no_keyboard}
+  end
+  def answer(:deposit, "turk") do
+    {"""
+  Önünde yatırım planlarının listesi var.
+  Yapabileceğini seç.
+
+
+  Test drive 🚴
+  15 $dan 100$a kadar
+  günde %3, bir kez ve sonsuza kadar.
+  Oyunlar ✅
+  Gizli menü ❌
+  Milyonerler klübü ❌
+
+
+  Yol 🚘
+  101$dan - 1000$ kadar
+  günde %3.5, bir kez ve sonsuza kadar.
+  Oyunlar ✅
+  Gizli menü ✅
+  Milyonerler kulübü ❌
+
+
+  Nitro 🚀
+  1001$dan - 10000$a kadar
+  günde %4, bir kez ve sonsuza kadar.
+  Geliri nasıl sağladığımızı öğrenirsin 🔮
+  Oyunlar ✅
+  Gizli menü ✅
+  Milyonerler kulübü ✅
+
+
+  Özel 👑
+  $10000+
+  Bireysel plan
+    """, :deposit}
+  end
+  def answer(:deposit_address, "turk") do
+    {"""
+  Göndermek <%=@btc_amount%> veya bu adrese daha Bitcoin <%=@address%>
+  Biz depozito aldığınızda biz size bilgi verecektir.
+    """, :main}
+  end
+  def answer(:investment_recieved, "turk") do
+    {"""
+  Biz tutarında depozito aldık $<%= @usd_amount %>
+  Sen doğru seçim yaptı 👍
+	Sen para Bitcoin ağı üzerinde 1 onay alındıktan sonra hesabınıza yatırılır olacak.
+  Genellikle, yaklaşık 10 dakika sürer.
+      """, :main}
+  end
+  def answer(:test_drive_achieved, "turk") do
+    {"Bir Test Drive üzerinde konum. Artık oyun oynayabilir", :main}
+  end
+  def answer(:highway_achieved, "turk") do
+    {"Bir karayolu üzerinde konum. Şimdi oyun ve gizli menüsüne erişmek", :main}
+  end
+  def answer(:nitro_achieved, "turk") do
+    {"Bir Nitro konum. Şimdi oyunlara erişmek, gizli menü ve Milyonerler Kulübü var", :main}
+  end
+  def answer(:reinvest, "turk") do
+    {"Bakiyeniz $<%= @usd_amount %>. 💫", :reinvest}
+  end
+  def answer(:reinvestment_recieved, "turk") do
+    {"Sen kar yatırım yaptık. Aferin! 🎉 🎉 🎉", :main}
+  end
+  def answer(:reinvestment_denied, "turk") do
+    {"Reinvesting için yetersiz fon!", :main}
+  end
+
+
+  def answer(:investments, "turk") do
+    {"""
+  Denge: $<%= if @usd_amount == 0 do %><%= @usd_amount%> 😰<%= else %><%= @usd_amount %> 😉<% end %>
+
+
+  Depozito:
+  <%= Enum.map(@investments, fn i -> %> <%= if i.type == "investment" do %>👍 Yatırıma $<%=i.cent_amount/100%>, tarih <%= i.date_confirmed%><% else %>😼 yeniden yatırılan $<%=i.cent_amount/100%>, tarih <%= i.date_confirmed%><% end %>
+  <% end) %>
+  Ödemeler:
+  <%= Enum.map(@payouts, fn p -> %>🙀 Miktarda ödeme $<%=p.cent_amount/100%>, tarih <%= p.inserted_at%>
+  <% end) %>
+  Sen yatırım yaptık: $<%= @you_invested %> 👍
+  Almış olduğunuz: $<%= @you_paid %> 😉
+
+
+  Biz <%= @days %> gün boyunca oyunda konum, toplam USD yatırım: $<%= @total_invested %> 💰💰💰
+    """, :main}
+  end
+
+
+  def answer(:withdrawal, "turk") do
+    {"Mevcut bakiye $<%= @usd_amount %>", :withdrawal}
+  end
+  def answer(:withdrawal_sent, "turk") do
+    {"Fonlar gönderildi, onay için bekliyor. tx_id: <%= @tx_id%>", :main}
+  end
+  def answer(:reflink, "turk") do
+    {"""
+		Referans bağlantınızı (web): https://bitfuture.io/?ref=<%=@referral_code%>
+		Referans bağlantınızı (bot): https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    İlk seviye 10% İkinci seviye 2%
+		You have no referrals yet :(
+
+
+    Birisi Referans bağlantınızı kullanarak depozito yaptığında, hemen onların mevduat% 10 alacaksınız.
+    """, :main}
+  end
+  def answer(:reflink_with_list, "turk") do
+    {"""
+		Referans bağlantınızı (web): https://bitfuture.io/?ref=<%=@referral_code%>
+		Referans bağlantınızı (bot): https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    İlk seviye 10% İkinci seviye 2%
+		Referrals invited by you:
+		<%= @referrals_str %>
+
+
+    Birisi Referans bağlantınızı kullanarak depozito yaptığında, hemen onların mevduat% 10 alacaksınız.
+    """, :main}
+  end
+  def answer(:referral_earning, "turk") do
+    {"VAY! <%= @first_name %> Referans bağlantınızı kullanarak onun / onu ilk yatırımını yaptı! $<%= @usd_earning_amount%> kazandık 💎💎💎 ", :main}
+  end
+  def answer(:settings_ref, "turk") do
+    {"Sen <%= @first_name %> tarafından davet edildiniz.", :settings}
+  end
+  def answer(:settings, "turk") do
+    {"Bir yönlendirme yok.", :settings}
+  end
+  def answer(:input_address, "turk") do
+    {"Para çekme adresi oluşturma.", :no_keyboard}
+  end
+  def answer(:address_set, "turk") do
+    {"Tamam. Adres kaydedildi.", :main}
+  end
+  def answer(:address_denied, "turk") do
+    {"Üzgünüm, <%= @address %> geçerli Bitcoin adresi değil", :main}
+  end
+  def answer(:input_refcode, "turk") do
+    {"Bana sizi davet kullanıcının bir Referans bağlantınızı Gönder", :no_keyboard}
+  end
+  def answer(:referral_set, "turk") do
+    {"sevk değişti", :main}
+  end
+
+
+
+
+  def answer(:referral_invalid, "turk") do
+    {"Maalesef, geçersiz Referans bağlantınızı", :main}
+  end
+  def answer(:investment_earning, "turk") do
+    {"Yeni günlük kar: $<%= @usd_earning_amount %>",:main}
+  end
+  def answer(:payout_address_not_set, "turk") do
+    {"Ayarlarında Lütfen kurulum çekme adresi!", :main}
+  end
+
+
+  def answer(:minimum_withdrawal, "turk") do
+    {"Asgari para çekme: $<%= @usd_amount %>", :main}
+  end
+  def answer(:technical_issue, "turk") do
+    {"Bir şeyler ters gitti Üzgünüz, bunu kolay tutmak! Sadece daha sonra tekrar deneyin.", :main}
+  end
+  def answer(:welcome_back, "turk") do
+    {"Tekrar hoşgeldiniz, <%= @first_name %>", :main}
+  end
+  def answer(:balance, "turk") do
+    {"Mevcut bakiye: $ <%= @usd_amount %>", :main}
+  end
+  def answer(:referral_self_denied, "turk") do
+    {"Maalesef, kendi yönlendirme olamaz =)", :main}
+  end
+	def answer(:contacts, "turk") do
+		{"""
+		Website: bitfuture.io
+		💬 Bitfuture Community: https://telegram.me/joinchat/ESrn_0FfEirX5NWjsFCjgA
+
+
+		German Community: https://telegram.me/joinchat/ESrn_0CVkNRTKWSEXaTSag
+		Indonesian community https://telegram.me/joinchat/Dzoo3D_xSU6XqC__0dxMDQ
+		Russian community https://telegram.me/joinchat/ESrn_0E1h525uYlzVyczPg
+		Indian community https://telegram.me/joinchat/ESrn_0F86S1K1irMD3HAlA
+
+
+		@bitfuture the Creator
+		@bitfuture_Kate RU, EN Support
+		@bitfuture_Ashley EN Support
+		""", :main}
+	end
+  def answer(:investment_confirmed, "turk") do
+    {"İşleminiz onaylandıktan <%= @usd_amount %>", :main}
+  end
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+
+
+  def answer(:menu, "esp") do
+    {"""
+    Hola 👄
+    Utilice el menú abajo, para descubrir todos mis secretos 👽
+    👇👇👇👇👇👇
+    """, :main}
+  end
+
+
+  def answer(:registered, "esp") do
+    {"Gracias por el registro!", :main}
+  end
+  def answer(:language_selected, "esp") do
+    {"Gracias por elegir el idioma español", :main}
+  end
+  def answer(:referrals, "esp") do
+    {"""
+  ¡No atrapes pokémones en el camino, atrapa dinero! 💸
+  ¡Pulsa I WANT MONEY 💰 y obten 10 cuentas Telegram de tus correligionarios que todavía no sepan de nosotros, atráelos al proyecto a través de tu enlace de referral y gana el 10 % de sus depósitos y uno por ciento por sus referrals!
+  👪
+  Tu enlace de referral: telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+  ¡Pulsa more  📈🔝, cuando acabes con estos 10 enlaces!
+    """, :referrals}
+  end
+  def answer(:referrals_highway_required, "esp") do
+    {"""
+  Para llegar al menú secreto, deberás encontrarte en el highway, investa $100 y regresa, te espero 💋💋💋
+  En el menú secreto te espera un instrumento único para el crecimiento exponencial de tus ganancias 🔎📈💸
+    """, :deposit_required}
+  end
+  def answer(:referrals_get, "esp") do
+    {"""
+      Trate de ponerse en contacto con estas personas: \n<%=@usernames_str%>
+      WARNING: These people may NOT speak your NATIVE LANGUAGE.
+      English language is the best way to start coverstion!
+      """, :referrals_more}
+  end
+  def answer(:referrals_none, "esp") do
+    {"Lo sentimos, no hay contactos que quedan hoy en día. Por favor, póngase en contacto con el apoyo.", :main}
+  end
+  def answer(:games, "esp") do
+    {"""
+  ¡Compite con otros, jugando a las Speed Driver.
+  Demuestra que no tienes igual en la pista 🚘🚘🚘🚘
+  Pagamos diariamente $5 por el record del día 🏆
+  $30 por el record de la semana 🔥🏆🔥
+  ¡Pulsa I WANT TO PLAY 🙀🎮
+  Gana en nuestro chat de juegos! 
+    """, :games}
+  end
+  def answer(:games_test_drive_required, "esp") do
+    {"Para jugar a los juegos, deberás inscribirse para un test drive 🚴", :deposit_required}
+  end
+  def answer(:games_invite, "esp") do
+    {"""
+		Entrar en el juego aquí!
+		https://telegram.me/joinchat/ESrn_0BOi77PJe9qqHncAQ
+		""", :main}
+  end
+  def answer(:faq, "esp") do
+    {"""
+  ¿Cómo se gana dinero con nosotros?
+  ¡No hay nada más fácil! Ya estás en el camino correcto 📈
+  Para iniciar, necesitarás Bitcoin y una billetera de Bitcoin.
+  Seguir: 👉
+  ¡Pulsa INVEST en el menú principal, elige la suma y el plan de tarifas convenientes, envía Bitcoin a la dirección que te mostraré!
+
+
+  ¿Qué es Bitcoin y dónde podrás obtenerlo?
+  Es una historia muy larga 🏃 ,  pero si te interesa, puedes leerlo aquí: https://en.wikipedia.org/wiki/Bitcoin
+  Bitcoins pueden comprarse en muchas casas de cambio en línea, por ejemplo, en esta: https://www.bestchange.com
+
+
+  ¿Cómo ganáis dinero?
+  Del mismo modo que lo harás tú: ¡a través de inversiones! ¡Solo que para ti esto será más fácil: invertes solamente en nuestro proyecto, mientras que nosotros tenemos que seleccionar cuidadosamente muchos proyectos pioneros tecnológicos e invertir en ellos para asegurarte un nivel de ganacias digno! Pero ya puedes créernoslo, somos profesionales en estos asuntos 👑👑👑
+
+
+  ¿Qué es el menú secreto?
+  IEs por eso que se llama “secreto” que no te lo digo, ¿acaso seré interesante para ti sin una intriga? 🔥💋🔥
+  El menú secreto te provee un instrumento ideal para ganar dinero sin invertir.
+
+
+  ¿Con qué destacáis de entre proyectos semejantes?
+  Primero, como objeto de inversiones figuran proyectos cuidadosamente seleccionados en el mismo mercado de inversiones, que se caracterizan por riesgos reducidos y ganancias elevadas. Nuestros analistas eligen de una manera independiente los mejores proyectos en el mercado de start-ups Blockchain, y nosotros revendemos participaciones en los proyectos en el mercado secundario.
+    """, :main}
+  end
+  def answer(:talk_to_me, "esp") do
+    {"""
+  ¿Estás aburrido?
+  Podemos comunicar contigo sobre cualquier tema, ¡y aquí podrás hacer preguntas a los administradores directamente 👌
+    """, :no_keyboard}
+  end
+  def answer(:deposit, "esp") do
+    {"""
+  Puedes ver la lista de planes de inversión.
+  Elige el que podrás cumplir.
+
+
+  Test drive 🚴
+  De $15 hasta $100
+  el 3% diario, de una vez para todas.
+  Juegos ✅
+  Menú secreto ❌
+  Club de millonarios ❌
+
+
+  Highway 🚘
+  De $101 hasta $1000
+  el 3.5% diario, de una vez para todas.
+  Juegos ✅
+  Menú secreto ✅
+  Club de millonarios ❌
+
+
+  Nitro 🚀
+  De $1001 hasta $10000
+  el 4% diario, de una vez para todas.
+  Te enterarás de cómo aseguramos la rentabilidad 🔮
+  Juegos ✅
+  Menú secreto ✅
+  Club de millonarios ✅
+
+
+  Custom 👑
+  $10000+
+  El plan individual
+    """, :deposit}
+  end
+  def answer(:deposit_address, "esp") do
+    {"""
+  Enviar <%=@btc_amount%> o más Bitcoin a esta dirección <%=@address%>
+  Le informaremos cuando recibamos su depósito.
+    """, :main}
+  end
+  def answer(:investment_recieved, "esp") do
+    {"""
+  Hemos recibido su depósito en la cantidad de $<%= @usd_amount %>
+  Usted ha hecho la elección correcta 👍
+	Ustedes, los fondos serán depositados en su cuenta después del 1 de confirmación en la red Bitcoin. Por lo general, se tarda unos 10 minutos.
+      """, :main}
+  end
+  def answer(:test_drive_achieved, "esp") do
+    {"Estás en una Test Drive. Ahora puede jugar a juegos", :main}
+  end
+  def answer(:highway_achieved, "esp") do
+    {"Estás en una Highway. Ahora usted tiene acceso a los juegos y menú secreto", :main}
+  end
+  def answer(:nitro_achieved, "esp") do
+    {"Estás en una Nitro. Ahora usted tiene acceso a juegos, menú secreto y El Club de Millonarios", :main}
+  end
+  def answer(:reinvest, "esp") do
+    {"Su saldo es $<%= @usd_amount %>. 💫", :reinvest}
+  end
+  def answer(:reinvestment_recieved, "esp") do
+    {"Usted ha invertido sus ganancias. Bien hecho! 🎉 🎉 🎉", :main}
+  end
+  def answer(:reinvestment_denied, "esp") do
+    {"La insuficiencia de fondos para la reinversión!", :main}
+  end
+
+
+  def answer(:investments, "esp") do
+    {"""
+  Balance: $<%= if @usd_amount == 0 do %><%= @usd_amount%> 😰<%= else %><%= @usd_amount %> 😉<% end %>
+
+
+  Depósitos:
+  <%= Enum.map(@investments, fn i -> %> <%= if i.type == "investment" do %>👍 Invertido $<%=i.cent_amount/100%>, fecha <%= i.date_confirmed%><% else %>😼 Reinvertido $<%=i.cent_amount/100%>, fecha <%= i.date_confirmed%><% end %>
+  <% end) %>
+  Los pagos:
+  <%= Enum.map(@payouts, fn p -> %>🙀 Pago en el importe $<%=p.cent_amount/100%>, fecha <%= p.inserted_at%>
+  <% end) %>
+  Usted ha invertido: $<%= @you_invested %> 👍
+  Has recibido: $<%= @you_paid %> 😉
+
+
+  Estamos en el juego durante <%= @days %> días, Total USD invertidos: $<%= @total_invested %> 💰💰💰
+    """, :main}
+  end
+
+
+  def answer(:withdrawal, "esp") do
+    {"Saldo actual $<%= @usd_amount %>", :withdrawal}
+  end
+  def answer(:withdrawal_sent, "esp") do
+    {"Los fondos han sido enviados, esperan la confirmación. tx_id: <%= @tx_id%>", :main}
+  end
+	def answer(:reflink, "esp") do
+    {"""
+		Tu enlace de referencia (web): https://bitfuture.io/?ref=<%=@referral_code%>
+		Tu enlace de referencia (bot): https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    Primer nivel 10%, Segundo nivel 2%
+		You have no referrals yet :(
+
+
+    Cuando alguien hace un depósito a través de su enlace de referencia, usted recibirá el 10% de su depósito inmediatamente.
+    """, :main}
+  end
+	def answer(:reflink_with_list, "esp") do
+    {"""
+		Tu enlace de referencia (web): https://bitfuture.io/?ref=<%=@referral_code%>
+		Tu enlace de referencia (bot): https://telegram.me/<%=@bot_tg_id%>?start=<%=@referral_code%>
+		#ID: <%=@referral_code%>
+
+
+    Primer nivel 10%, Segundo nivel 2%
+		Referrals invited by you:
+		<%= @referrals_str %>
+
+
+    Cuando alguien hace un depósito a través de su enlace de referencia, usted recibirá el 10% de su depósito inmediatamente.
+    """, :main}
+  end
+  def answer(:referral_earning, "esp") do
+    {"WOW! <%= @first_name %> ha hecho su / su primera inversión usando tu enlace de referencia! Se han ganado $<%= @usd_earning_amount%> 💎💎💎 ", :main}
+  end
+  def answer(:settings_ref, "esp") do
+    {"Usted ha sido invitado por <%= @first_name %>.", :settings}
+  end
+  def answer(:settings, "esp") do
+    {"Usted no tiene un referente.", :settings}
+  end
+  def answer(:input_address, "esp") do
+    {"Configurar su dirección de retirada.", :no_keyboard}
+  end
+  def answer(:address_set, "esp") do
+    {"De acuerdo. Dirección se ha guardado.", :main}
+  end
+  def answer(:address_denied, "esp") do
+    {"Lo siento, <%= @address %> no es una dirección válida de Bitcoin", :main}
+  end
+  def answer(:input_refcode, "esp") do
+    {"Envíame un enlace de referencia del usuario, que le ha invitado", :no_keyboard}
+  end
+  def answer(:referral_set, "esp") do
+    {"Remisión cambió", :main}
+  end
+
+
+
+
+  def answer(:referral_invalid, "esp") do
+    {"Lo sentimos, enlace de referencia no válido", :main}
+  end
+  def answer(:investment_earning, "esp") do
+    {"Nueva ganancia diaria: $<%= @usd_earning_amount %>",:main}
+  end
+  def answer(:payout_address_not_set, "esp") do
+    {"Por favor, configure su dirección de retirada en los entornos!", :main}
+  end
+
+
+  def answer(:minimum_withdrawal, "esp") do
+    {"Retiro mínimo: $<%= @usd_amount %>", :main}
+  end
+  def answer(:technical_issue, "esp") do
+    {"Vaya algo salió mal, que sea fácil! Simplemente tratar más adelante.", :main}
+  end
+  def answer(:welcome_back, "esp") do
+    {"Dar una buena acogida, <%= @first_name %>", :main}
+  end
+  def answer(:balance, "esp") do
+    {"Saldo actual: $ <%= @usd_amount %>", :main}
+  end
+  def answer(:referral_self_denied, "esp") do
+    {"Lo sentimos, no puede ser su propia referencia =)", :main}
+  end
+  def answer(:contacts, "esp") do
+		{"""
+		Website: bitfuture.io
+		💬 Bitfuture Community: https://telegram.me/joinchat/ESrn_0FfEirX5NWjsFCjgA
+
+
+		German Community: https://telegram.me/joinchat/ESrn_0CVkNRTKWSEXaTSag
+		Indonesian community https://telegram.me/joinchat/Dzoo3D_xSU6XqC__0dxMDQ
+		Russian community https://telegram.me/joinchat/ESrn_0E1h525uYlzVyczPg
+		Indian community https://telegram.me/joinchat/ESrn_0F86S1K1irMD3HAlA
+
+
+		@bitfuture the Creator
+		@bitfuture_Kate RU, EN Support
+		@bitfuture_Ashley EN Support
+		""", :main}
+  end
+  def answer(:investment_confirmed, "esp") do
+    {"Su transacción ha sido confirmada <%= @usd_amount %>", :main}
+  end
+  ####################################################
+  ####################################################
+  ####################################################
+  ####################################################
+
+
+
+
+
+
+
+
+  def text_to_command(text, lang) do
+    map = command_map(lang)
+    Map.get(map, text)
+  end
+
+
+  def command_map("ru") do
+    %{
+      "Вклады 💰" => :investments,
+      "Депозит 📈" => :deposit,
+      "Вывод 💸" => :withdrawal,
+      "Инвайт 👪" => :reflink,
+      "Реинвест ♻" => :reinvest,
+      "Secret 🔮" => :referrals,
+      "Опции 🔧" => :settings,
+      "Игры 🎮" => :games,
+      "FAQ 📖" => :faq,
+      "Чат 💬" => :contacts,
+      "Вопрос ❓" => :talk_to_me,
+      "/start" => :start,
+    }
+  end
+
+
+
+
+  def command_map(_) do
+    %{
+      "Deposits 💰" => :investments,
+      "Invest 📈" => :deposit,
+      "Withdraw 💸" => :withdrawal,
+      "Invite 👪" => :reflink,
+      "Reinvest ♻" => :reinvest,
+      "Secret 🔮" => :referrals,
+      "Options 🔧" => :settings,
+      "FAQ 📖" => :faq,
+      "Chat 💬" => :contacts,
+      "Games 🎮" => :games,
+      "Question ❓" => :talk_to_me,
+      "/start" => :start,
+    }
+  end
+
+
+
+
+
+
+####################################################
+####################################################
+####################################################
+####################################################
+
+
+  def keyboard(:select_language, _) do
+    %{inline_keyboard: [
+      [%{text: "🇬🇧 English", callback_data: "[\"language\",\"en\"]"}],
+      [%{text: "🇷🇺 Русский", callback_data: "[\"language\",\"ru\"]"}],
+      [%{text: "🇹🇷 Turkce", callback_data: "[\"language\",\"turk\"]"}],
+      [%{text: "🇩🇪 Deutsch", callback_data: "[\"language\",\"ger\"]"}],
+      [%{text: "🇪🇸 Español", callback_data: "[\"language\",\"esp\"]"}],
+    ]}
+  end
+
+
+  def keyboard(:no_keyboard, _) do
+    []
+  end
+
+
+####################################################
+####################################################
+####################################################
+####################################################
+
+
+  def keyboard(:main, "ru") do
+      %Nadia.Model.ReplyKeyboardMarkup{keyboard:
+        [
+          ["Депозит 📈", "Вывод 💸"],
+          #["Реинвест ♻", "Вопрос ❓"],
+          ["Реинвест ♻", "Вклады 💰",],
+					["Инвайт 👪", "Secret 🔮", "Игры 🎮",],
+          ["Чат 💬", "FAQ 📖", "Опции 🔧"],
+        ],
+        one_time_keyboard: true}
+  end
+
+
+	def keyboard(:deposit, _) do
+		%{inline_keyboard: [
+				[%{text: "Bitcoin", callback_data: "[\"deposit\",\"bitcoin\"]"}],
+				[%{text: "Perfect Money", callback_data: "[\"deposit\",\"perfect_money\"]"}],
+		]}
+	end
+
+
+  def keyboard(:deposit_bitcoin, "ru") do
+    %{inline_keyboard: [
+      [
+        %{text: "$15", callback_data: "[\"deposit\",15]"},
+        %{text: "$20", callback_data: "[\"deposit\",20]"},
+        %{text: "$25", callback_data: "[\"deposit\",25]"},
+        %{text: "$30", callback_data: "[\"deposit\",30]"},
+      ],
+			[
+				%{text: "$35", callback_data: "[\"deposit\",35]"},
+        %{text: "$40", callback_data: "[\"deposit\",40]"},
+				%{text: "$45", callback_data: "[\"deposit\",45]"},
+				%{text: "$50", callback_data: "[\"deposit\",50]"},
+      ],
+			[
+				%{text: "$60", callback_data: "[\"deposit\",60]"},
+        %{text: "$70", callback_data: "[\"deposit\",70]"},
+        %{text: "$80", callback_data: "[\"deposit\",80]"},
+        %{text: "$90", callback_data: "[\"deposit\",90]"},
+      ],
+      [
+				%{text: "$100", callback_data: "[\"deposit\",100]"},
+				%{text: "$150", callback_data: "[\"deposit\",150]"},
+				%{text: "$200", callback_data: "[\"deposit\",200]"},
+				%{text: "$250", callback_data: "[\"deposit\",250]"},
+      ],
+      [
+				%{text: "$300", callback_data: "[\"deposit\",300]"},
+        %{text: "$350", callback_data: "[\"deposit\",350]"},
+				%{text: "$400", callback_data: "[\"deposit\",400]"},
+        %{text: "$500", callback_data: "[\"deposit\",500]"},
+      ],
+      [
+        %{text: "$600", callback_data: "[\"deposit\",600]"},
+        %{text: "$700", callback_data: "[\"deposit\",700]"},
+        %{text: "$800", callback_data: "[\"deposit\",800]"},
+        %{text: "$900", callback_data: "[\"deposit\",900]"},
+      ],
+      [
+        %{text: "$1k", callback_data: "[\"deposit\",1000]"},
+        %{text: "$1.5k", callback_data: "[\"deposit\",1500]"},
+        %{text: "$2k", callback_data: "[\"deposit\",2000]"},
+        %{text: "$2.5k", callback_data: "[\"deposit\",2500]"},
+
+
+      ],
+      [
+				%{text: "$3k", callback_data: "[\"deposit\",3000]"},
+        %{text: "$3.5k", callback_data: "[\"deposit\",3500]"},
+				%{text: "$4k", callback_data: "[\"deposit\",4000]"},
+        %{text: "$5k", callback_data: "[\"deposit\",5000]"},
+      ],
+      [
+        %{text: "$6k", callback_data: "[\"deposit\",6000]"},
+        %{text: "$7k", callback_data: "[\"deposit\",7000]"},
+        %{text: "$8k", callback_data: "[\"deposit\",8000]"},
+        %{text: "$9k", callback_data: "[\"deposit\",9000]"},
+      ],
+      [
+        %{text: "$10k+ 👑", callback_data: "[\"deposit\",10000]"},
+        %{text: "Меню", callback_data: "[\"menu\",\"yes\"]"},
+      ],
+    ]}
+  end
+
+
+	def keyboard(:deposit_perfect_money, "ru") do
+    %{inline_keyboard: [
+      [
+        %{text: "$15", callback_data: "[\"deposit_pm\",15]"},
+        %{text: "$20", callback_data: "[\"deposit_pm\",20]"},
+        %{text: "$25", callback_data: "[\"deposit_pm\",25]"},
+        %{text: "$30", callback_data: "[\"deposit_pm\",30]"},
+      ],
+			[
+				%{text: "$35", callback_data: "[\"deposit_pm\",35]"},
+        %{text: "$40", callback_data: "[\"deposit_pm\",40]"},
+				%{text: "$45", callback_data: "[\"deposit_pm\",45]"},
+				%{text: "$50", callback_data: "[\"deposit_pm\",50]"},
+      ],
+			[
+				%{text: "$60", callback_data: "[\"deposit_pm\",60]"},
+        %{text: "$70", callback_data: "[\"deposit_pm\",70]"},
+        %{text: "$80", callback_data: "[\"deposit_pm\",80]"},
+        %{text: "$90", callback_data: "[\"deposit_pm\",90]"},
+      ],
+      [
+				%{text: "$100", callback_data: "[\"deposit_pm\",100]"},
+				%{text: "$150", callback_data: "[\"deposit_pm\",150]"},
+				%{text: "$200", callback_data: "[\"deposit_pm\",200]"},
+				%{text: "$250", callback_data: "[\"deposit_pm\",250]"},
+      ],
+      [
+				%{text: "$300", callback_data: "[\"deposit_pm\",300]"},
+        %{text: "$350", callback_data: "[\"deposit_pm\",350]"},
+				%{text: "$400", callback_data: "[\"deposit_pm\",400]"},
+        %{text: "$500", callback_data: "[\"deposit_pm\",500]"},
+      ],
+      [
+        %{text: "$600", callback_data: "[\"deposit_pm\",600]"},
+        %{text: "$700", callback_data: "[\"deposit_pm\",700]"},
+        %{text: "$800", callback_data: "[\"deposit_pm\",800]"},
+        %{text: "$900", callback_data: "[\"deposit_pm\",900]"},
+      ],
+      [
+        %{text: "$1k", callback_data: "[\"deposit_pm\",1000]"},
+        %{text: "$1.5k", callback_data: "[\"deposit_pm\",1500]"},
+        %{text: "$2k", callback_data: "[\"deposit_pm\",2000]"},
+        %{text: "$2.5k", callback_data: "[\"deposit_pm\",2500]"},
+
+
+      ],
+      [
+				%{text: "$3k", callback_data: "[\"deposit_pm\",3000]"},
+        %{text: "$3.5k", callback_data: "[\"deposit_pm\",3500]"},
+				%{text: "$4k", callback_data: "[\"deposit_pm\",4000]"},
+        %{text: "$5k", callback_data: "[\"deposit_pm\",5000]"},
+      ],
+      [
+        %{text: "$6k", callback_data: "[\"deposit_pm\",6000]"},
+        %{text: "$7k", callback_data: "[\"deposit_pm\",7000]"},
+        %{text: "$8k", callback_data: "[\"deposit_pm\",8000]"},
+        %{text: "$9k", callback_data: "[\"deposit_pm\",9000]"},
+      ],
+      [
+        %{text: "$10k+ 👑", callback_data: "[\"deposit_pm\",10000]"},
+        %{text: "Меню", callback_data: "[\"menu\",\"yes\"]"},
+      ],
+    ]}
+  end
+
+
+  def keyboard(:withdrawal, "ru") do
+    %{inline_keyboard: [
+        [%{text: "Вывести всю прибыль", callback_data: "[\"withdraw\",\"yes\"]"}],
+        [%{text: "Меню", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+
+
+  def keyboard(:reinvest, "ru") do
+    %{inline_keyboard: [
+          [%{text: "Реинвестировать всю прибыль", callback_data: "[\"reinvest\",\"yes\"]"}],
+          [%{text: "Меню", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+  def keyboard(:investments, "ru") do
+    %{inline_keyboard: [
+          [%{text: "Вывести 💸", callback_data: "[\"withdraw\"]"}],
+          [%{text: "Меню", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+  def keyboard(:referrals, "ru") do
+    %{inline_keyboard: [
+        [%{text: "Хочу денег 💰", callback_data: "[\"referrals\",\"get\"]"}],
+        [%{text: "Меню", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+  def keyboard(:referrals_more, "ru") do
+    %{inline_keyboard: [
+        [%{text: "Хочу еще 💰", callback_data: "[\"referrals\",\"get\"]"}],
+        [%{text: "Меню", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+  def keyboard(:settings, "ru") do
+    %{inline_keyboard: [
+      [
+        %{text: "-> BTC адрес для вывода", callback_data: "[\"settings\",\"address\"]"},
+      ],
+      [
+          %{text: "Сменить реферера", callback_data: "[\"settings\",\"parent\"]"},
+      ],
+			[
+				%{text: "Язык", callback_data: "[\"settings\",\"language\"]"},
+			],
+      [
+        %{text: "Меню", callback_data: "[\"menu\",\"yes\"]"},
+      ],
+    ]}
+  end
+
+
+  def keyboard(:deposit_required, "ru") do
+    %{inline_keyboard: [
+        [%{text: "Инвестировать 📈", callback_data: "[\"deposit_required\",\"yes\"]"}],
+        [%{text: "Меню", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+
+
+  def keyboard(:games, "ru") do
+    %{inline_keyboard: [
+        [%{text: "Хочу играть 🙀🎮", callback_data: "[\"games\",\"yes\"]"}],
+        [%{text: "Меню", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+####################################################
+####################################################
+####################################################
+####################################################
+
+
+  def keyboard(:main, _) do
+      %Nadia.Model.ReplyKeyboardMarkup{keyboard:
+        [
+          ["Invest 📈", "Withdraw 💸",],
+          #["Reinvest ♻", "Question ❓"],
+          ["Reinvest ♻", "Deposits 💰",],
+					["Invite 👪", "Secret 🔮", "Games 🎮",],
+          ["Chat 💬", "FAQ 📖", "Options 🔧"],
+        ],
+        one_time_keyboard: true}
+  end
+
+
+	def keyboard(:deposit_bitcoin, _) do
+    %{inline_keyboard: [
+      [
+        %{text: "$15", callback_data: "[\"deposit\",15]"},
+        %{text: "$20", callback_data: "[\"deposit\",20]"},
+        %{text: "$25", callback_data: "[\"deposit\",25]"},
+        %{text: "$30", callback_data: "[\"deposit\",30]"},
+      ],
+			[
+				%{text: "$35", callback_data: "[\"deposit\",35]"},
+        %{text: "$40", callback_data: "[\"deposit\",40]"},
+				%{text: "$45", callback_data: "[\"deposit\",45]"},
+				%{text: "$50", callback_data: "[\"deposit\",50]"},
+      ],
+			[
+				%{text: "$60", callback_data: "[\"deposit\",60]"},
+        %{text: "$70", callback_data: "[\"deposit\",70]"},
+        %{text: "$80", callback_data: "[\"deposit\",80]"},
+        %{text: "$90", callback_data: "[\"deposit\",90]"},
+      ],
+      [
+				%{text: "$100", callback_data: "[\"deposit\",100]"},
+				%{text: "$150", callback_data: "[\"deposit\",150]"},
+				%{text: "$200", callback_data: "[\"deposit\",200]"},
+				%{text: "$250", callback_data: "[\"deposit\",250]"},
+      ],
+      [
+				%{text: "$300", callback_data: "[\"deposit\",300]"},
+        %{text: "$350", callback_data: "[\"deposit\",350]"},
+				%{text: "$400", callback_data: "[\"deposit\",400]"},
+        %{text: "$500", callback_data: "[\"deposit\",500]"},
+      ],
+      [
+        %{text: "$600", callback_data: "[\"deposit\",600]"},
+        %{text: "$700", callback_data: "[\"deposit\",700]"},
+        %{text: "$800", callback_data: "[\"deposit\",800]"},
+        %{text: "$900", callback_data: "[\"deposit\",900]"},
+      ],
+      [
+        %{text: "$1k", callback_data: "[\"deposit\",1000]"},
+        %{text: "$1.5k", callback_data: "[\"deposit\",1500]"},
+        %{text: "$2k", callback_data: "[\"deposit\",2000]"},
+        %{text: "$2.5k", callback_data: "[\"deposit\",2500]"},
+
+
+      ],
+      [
+				%{text: "$3k", callback_data: "[\"deposit\",3000]"},
+        %{text: "$3.5k", callback_data: "[\"deposit\",3500]"},
+				%{text: "$4k", callback_data: "[\"deposit\",4000]"},
+        %{text: "$5k", callback_data: "[\"deposit\",5000]"},
+      ],
+      [
+        %{text: "$6k", callback_data: "[\"deposit\",6000]"},
+        %{text: "$7k", callback_data: "[\"deposit\",7000]"},
+        %{text: "$8k", callback_data: "[\"deposit\",8000]"},
+        %{text: "$9k", callback_data: "[\"deposit\",9000]"},
+      ],
+      [
+        %{text: "$10k+ 👑", callback_data: "[\"deposit\",10000]"},
+        %{text: "Menu", callback_data: "[\"menu\",\"yes\"]"},
+      ],
+    ]}
+  end
+
+
+	def keyboard(:deposit_perfect_money, _) do
+    %{inline_keyboard: [
+      [
+        %{text: "$15", callback_data: "[\"deposit_pm\",15]"},
+        %{text: "$20", callback_data: "[\"deposit_pm\",20]"},
+        %{text: "$25", callback_data: "[\"deposit_pm\",25]"},
+        %{text: "$30", callback_data: "[\"deposit_pm\",30]"},
+      ],
+			[
+				%{text: "$35", callback_data: "[\"deposit_pm\",35]"},
+        %{text: "$40", callback_data: "[\"deposit_pm\",40]"},
+				%{text: "$45", callback_data: "[\"deposit_pm\",45]"},
+				%{text: "$50", callback_data: "[\"deposit_pm\",50]"},
+      ],
+			[
+				%{text: "$60", callback_data: "[\"deposit_pm\",60]"},
+        %{text: "$70", callback_data: "[\"deposit_pm\",70]"},
+        %{text: "$80", callback_data: "[\"deposit_pm\",80]"},
+        %{text: "$90", callback_data: "[\"deposit_pm\",90]"},
+      ],
+      [
+				%{text: "$100", callback_data: "[\"deposit_pm\",100]"},
+				%{text: "$150", callback_data: "[\"deposit_pm\",150]"},
+				%{text: "$200", callback_data: "[\"deposit_pm\",200]"},
+				%{text: "$250", callback_data: "[\"deposit_pm\",250]"},
+      ],
+      [
+				%{text: "$300", callback_data: "[\"deposit_pm\",300]"},
+        %{text: "$350", callback_data: "[\"deposit_pm\",350]"},
+				%{text: "$400", callback_data: "[\"deposit_pm\",400]"},
+        %{text: "$500", callback_data: "[\"deposit_pm\",500]"},
+      ],
+      [
+        %{text: "$600", callback_data: "[\"deposit_pm\",600]"},
+        %{text: "$700", callback_data: "[\"deposit_pm\",700]"},
+        %{text: "$800", callback_data: "[\"deposit_pm\",800]"},
+        %{text: "$900", callback_data: "[\"deposit_pm\",900]"},
+      ],
+      [
+        %{text: "$1k", callback_data: "[\"deposit_pm\",1000]"},
+        %{text: "$1.5k", callback_data: "[\"deposit_pm\",1500]"},
+        %{text: "$2k", callback_data: "[\"deposit_pm\",2000]"},
+        %{text: "$2.5k", callback_data: "[\"deposit_pm\",2500]"},
+
+
+      ],
+      [
+				%{text: "$3k", callback_data: "[\"deposit_pm\",3000]"},
+        %{text: "$3.5k", callback_data: "[\"deposit_pm\",3500]"},
+				%{text: "$4k", callback_data: "[\"deposit_pm\",4000]"},
+        %{text: "$5k", callback_data: "[\"deposit_pm\",5000]"},
+      ],
+      [
+        %{text: "$6k", callback_data: "[\"deposit_pm\",6000]"},
+        %{text: "$7k", callback_data: "[\"deposit_pm\",7000]"},
+        %{text: "$8k", callback_data: "[\"deposit_pm\",8000]"},
+        %{text: "$9k", callback_data: "[\"deposit_pm\",9000]"},
+      ],
+      [
+        %{text: "$10k+ 👑", callback_data: "[\"deposit_pm\",10000]"},
+        %{text: "Menu", callback_data: "[\"menu\",\"yes\"]"},
+      ],
+    ]}
+  end
+
+
+  def keyboard(:withdrawal, _) do
+    %{inline_keyboard: [
+      [%{text: "Withdraw all profit", callback_data: "[\"withdraw\",\"yes\"]"}],
+      [%{text: "Menu", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+
+
+  def keyboard(:reinvest, _) do
+    %{inline_keyboard: [
+      [%{text: "Reinvest all profit", callback_data: "[\"reinvest\",\"yes\"]"}],
+      [%{text: "Menu", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+  def keyboard(:investments, _) do
+    %{inline_keyboard: [
+      [%{text: "Withdraw 💸", callback_data: "[\"withdraw\"]"}],
+      [%{text: "Menu", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+  def keyboard(:referrals, _) do
+    %{inline_keyboard: [
+        [%{text: "I want money 💰", callback_data: "[\"referrals\",\"get\"]"}],
+        [%{text: "Menu", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+  def keyboard(:referrals_more, _) do
+    %{inline_keyboard: [
+        [%{text: "I want more 💰", callback_data: "[\"referrals\",\"get\"]"}],
+        [%{text: "Menu", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+  def keyboard(:settings, _) do
+    %{inline_keyboard: [
+			[
+				%{text: "-> BTC payout address", callback_data: "[\"settings\",\"address\"]"},
+			],
+      [
+        %{text: "Change referrer ID", callback_data: "[\"settings\",\"parent\"]"},
+      ],
+      [
+      	%{text: "Language", callback_data: "[\"settings\",\"language\"]"},
+      ],
+      [
+        %{text: "Menu", callback_data: "[\"menu\",\"yes\"]"},
+      ],
+    ]}
+  end
+
+
+  def keyboard(:deposit_required, _) do
+    %{inline_keyboard: [
+        [%{text: "Invest 📈", callback_data: "[\"deposit_required\",\"yes\"]"}],
+        [%{text: "Menu", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+
+
+  def keyboard(:games, _) do
+    %{inline_keyboard: [
+        [%{text: "I want to play 🙀🎮", callback_data: "[\"games\",\"yes\"]"}],
+        [%{text: "Menu", callback_data: "[\"menu\",\"yes\"]"}],
+    ]}
+  end
+
+
+end
+
+
